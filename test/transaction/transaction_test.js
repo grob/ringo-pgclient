@@ -208,19 +208,37 @@ exports.testCommitEvent = () => {
     const author = new Author({
         "name": "John Doe"
     });
+    author.save();
     // inserted
     assert.isNotNull(mods);
-    assert.isTrue(mods.inserted.hasOwnProperty(author._key));
+    assert.isTrue(Array.isArray(mods));
+    assert.strictEqual(mods.length, 1);
+    assert.isTrue(mods.includes(author._key));
     // updated
     author.name = "Jane Foo";
     author.save();
-    assert.isTrue(mods.updated.hasOwnProperty(author._key));
-    // clear the entity cache
-    client.cache.clear();
+    assert.isTrue(mods.includes(author._key));
+    // deleted
+    author.delete();
+    assert.isTrue(mods.includes(author._key));
+
+    // CRUD in transaction
+    const authorUpdated = new Author({"name": "Inserted"});
+    authorUpdated.save();
+    const authorDeleted = new Author({"name": "Removed"});
+    authorDeleted.save();
+    
     client.beginTransaction();
-    Author.get(1).delete();
+    authorUpdated.name = "Updated";
+    authorUpdated.save();
+    authorDeleted.delete();
+    const authorInserted = new Author({"name": "Inserted"});
+    authorInserted.save();
     client.commitTransaction();
-    assert.isTrue(mods.deleted.hasOwnProperty(author._key));
+    assert.strictEqual(mods.length, 3);
+    assert.isTrue(mods.includes(authorInserted._key));
+    assert.isTrue(mods.includes(authorUpdated._key));
+    assert.isTrue(mods.includes(authorDeleted._key));
 };
 
 //start the test runner if we're called directly from command line

@@ -1,0 +1,72 @@
+const assert = require("assert");
+const system = require("system");
+const helpers = require("../helpers");
+const Client = require("../../lib/client");
+const database = require("../../lib/database");
+const constants = require("../../lib/constants");
+
+let client = null;
+let Author = null;
+
+exports.setUp = () => {
+    client = new Client(helpers.initPool());
+    Author = client.defineModel("Author", {
+        "table": "t_author",
+        "id": {
+            "column": "aut_id",
+            "type": "int8",
+            "sequence": "author_id"
+        },
+        "properties": {
+            "name": {
+                "column": "aut_name",
+                "type": "varchar"
+            }
+        }
+    });
+    database.initModel(client, Author.mapping);
+};
+
+exports.tearDown = () => {
+    database.dropAll(client);
+    client && client.close();
+    Author = null;
+};
+
+exports.testCRUD = () => {
+    assert.strictEqual(Author.all().length, 0);
+    let author = new Author({"name": "John Doe"});
+    assert.isUndefined(author.id);
+    assert.strictEqual(author._state, constants.STATE_NEW);
+    author.save();
+    assert.strictEqual(Author.all().length, 1);
+    assert.isNotNull(author.id);
+    assert.isNotNull(author.name);
+    assert.strictEqual(author._state, constants.STATE_CLEAN);
+    author = Author.get(author.id);
+    const name = "Jane Foo";
+    author.name = name;
+    assert.strictEqual(author._state, constants.STATE_DIRTY);
+    author.save();
+    assert.strictEqual(Author.all().length, 1);
+    assert.strictEqual(author._state, constants.STATE_CLEAN);
+    author = Author.get(author.id);
+    assert.strictEqual(author.name, name);
+    author.delete();
+    assert.strictEqual(Author.all().length, 0);
+    assert.strictEqual(author._state, constants.STATE_DELETED);
+};
+
+exports.testNullProps = function() {
+    let author = new Author();
+    assert.isNull(author.name);
+    author.save();
+    author = Author.get(1);
+    assert.isNull(author.name);
+};
+
+//start the test runner if we're called directly from command line
+if (require.main == module.id) {
+    system.exit(require("test").run.apply(null,
+            [exports].concat(system.args.slice(1))));
+}

@@ -1,3 +1,5 @@
+require("ringo/logging").setConfig(getResource("./log4j2.properties"));
+
 const assert = require("assert");
 const {Worker} = require("ringo/worker");
 const {Semaphore} = require("ringo/concurrent");

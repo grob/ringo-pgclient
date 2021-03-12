@@ -1,3 +1,5 @@
+require("ringo/logging").setConfig(getResource("./log4j2.properties"));
+
 const assert = require("assert");
 const system = require("system");
 const helpers = require("../helpers");

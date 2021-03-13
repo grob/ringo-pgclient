@@ -9,11 +9,9 @@ const Client = require("../../lib/client");
 const Cache = require("../../lib/cache");
 const Transaction = require("../../lib/transaction");
 const database = require("../../lib/database");
-const constants = require("../../lib/constants");
 
 let client = null;
 let Author = null;
-let Book = null;
 
 exports.setUp = () => {
     client = new Client(helpers.initPool(), new Cache(10));

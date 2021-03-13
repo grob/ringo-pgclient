@@ -23,6 +23,20 @@ exports.tearDown = () => {
 
 const VALUE_DATE = new Date(2021, 2, 12, 0, 0, 0, 0);
 const VALUE_TIMESTAMP = new Date(2021, 2, 12, 16, 24, 17, 342);
+const VALUE_BOX = [{"x": 1, "y": 2},{"x": 3, "y": 4}];
+const VALUE_POINT = {"x": 1, "y": 2};
+const VALUE_CIRCLE = {"x": 1, "y": 2, "r": 3};
+const VALUE_LINE = {"x1": 100, "y1": 100, "x2": 300, "y2": 300};
+const VALUE_LSEG = [{"x": 1, "y": 2},{"x": 3, "y": 4}];
+const VALUE_PATH = {
+    "points": [{"x": 1, "y": 2},{"x": 3, "y": 4},{"x": 5, "y": 6},{"x": 1, "y": 1}],
+    "isOpen": false
+};
+const VALUE_PATH_OPEN = {
+    "points": [{"x": 1, "y": 2},{"x": 3, "y": 4},{"x": 5, "y": 6}],
+    "isOpen": true
+};
+const VALUE_POLYGON = [{"x": 1, "y": 2},{"x": 3, "y": 4},{"x": 5, "y": 6}];
 
 const TESTS = [
     {
@@ -53,6 +67,13 @@ const TESTS = [
         ]
     },
     {
+        "dataType": dataTypes.BOX,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_BOX, "expected": VALUE_BOX.reverse()} // dunno why, but pg returns points in reverse order?
+        ]
+    },
+    {
         "dataType": dataTypes.BYTEA,
         "tests": [
             {"value": null, "expected": null},
@@ -75,6 +96,13 @@ const TESTS = [
             {"value": "öäüß", "expected": "öäüß"},
             {"options": "(1)", "value": "a", "expected": "a"},
             {"options": "(2)", "value": "a", "expected": "a"}
+        ]
+    },
+    {
+        "dataType": dataTypes.CIRCLE,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_CIRCLE, "expected": VALUE_CIRCLE}
         ]
     },
     {
@@ -115,6 +143,27 @@ const TESTS = [
         ]
     },
     {
+        "dataType": dataTypes.LINE,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_LINE, "expected": {"a": 1, "b": -1, "c": 0}}
+        ]
+    },
+    {
+        "dataType": dataTypes.LSEG,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_LSEG, "expected": VALUE_LSEG}
+        ]
+    },
+    {
+        "dataType": dataTypes.NAME,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "öäüß", "expected": "öäüß"}
+        ]
+    },
+    {
         "dataType": dataTypes.NUMERIC,
         "tests": [
             {"value": null, "expected": 0},
@@ -127,10 +176,25 @@ const TESTS = [
         ]
     },
     {
-        "dataType": dataTypes.NAME,
+        "dataType": dataTypes.PATH,
         "tests": [
             {"value": null, "expected": null},
-            {"value": "öäüß", "expected": "öäüß"}
+            {"value": VALUE_PATH, "expected": VALUE_PATH},
+            {"value": VALUE_PATH_OPEN, "expected": VALUE_PATH_OPEN}
+        ]
+    },
+    {
+        "dataType": dataTypes.POINT,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_POINT, "expected": VALUE_POINT}
+        ]
+    },
+    {
+        "dataType": dataTypes.POLYGON,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_POLYGON, "expected": VALUE_POLYGON}
         ]
     },
     {
@@ -214,6 +278,15 @@ const checkReceived = (dataType, received, expected) => {
             } else {
                 assert.strictEqual(JSON.stringify(received), JSON.stringify(expected));
             }
+            break;
+        case dataTypes.BOX:
+        case dataTypes.POINT:
+        case dataTypes.CIRCLE:
+        case dataTypes.LINE:
+        case dataTypes.LSEG:
+        case dataTypes.PATH:
+        case dataTypes.POLYGON:
+            assert.deepEqual(received, expected);
             break;
         default:
             assert.strictEqual(received, expected);

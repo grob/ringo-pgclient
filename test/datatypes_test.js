@@ -27,7 +27,7 @@ const VALUE_TIMESTAMP = new Date(2021, 2, 12, 16, 24, 17, 342);
 const TESTS = [
     {
         "dataType": dataTypes.BIGINT,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 1, "expected": 1},
             {"value": 1.1, "expected": 1},
@@ -37,7 +37,7 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.BIGSERIAL,
-        "values": [
+        "tests": [
             {"value": 1, "expected": 1},
             {"value": 1.1, "expected": 1},
             {"value": java.lang.Long.MIN_VALUE, "expected": java.lang.Long.MIN_VALUE},
@@ -46,7 +46,7 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.BOOLEAN,
-        "values": [
+        "tests": [
             {"value": null, "expected": false},
             {"value": true, "expected": true},
             {"value": false, "expected": false}
@@ -54,50 +54,53 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.BYTEA,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": binary.toByteString("test"), "expected": binary.toByteString("test")}
         ]
     },
     {
-        // TODO: length
         "dataType": dataTypes.CHARACTER,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
-            {"value": "a", "expected": "a"}
+            {"value": "a", "expected": "a"},
+            {"options": "(1)", "value": "a", "expected": "a"},
+            {"options": "(2)", "value": "a", "expected": "a "} // character is padded with spaces up to defined length
         ]
     },
     {
         "dataType": dataTypes.CHARACTER_VARYING,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
-            {"value": "öäüß", "expected": "öäüß"}
+            {"value": "öäüß", "expected": "öäüß"},
+            {"options": "(1)", "value": "a", "expected": "a"},
+            {"options": "(2)", "value": "a", "expected": "a"}
         ]
     },
     {
         "dataType": dataTypes.DATE,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": VALUE_DATE, "expected": new Date(VALUE_DATE.getTime())}
         ]
     },
     {
         "dataType": dataTypes.DOUBLE_PRECISION,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 1.234, "expected": 1.2339999675750732}
         ]
     },
     {
         "dataType": dataTypes.INTEGER,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 12, "expected": 12}
         ]
     },
     {
         "dataType": dataTypes.JSON_TYPE,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": {"test": 1}, "expected": {"test": 1}},
             {"value": [{"test": 1}], "expected": [{"test": 1}]}
@@ -105,24 +108,34 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.JSONB,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": {"test": 1}, "expected": {"test": 1}},
             {"value": [{"test": 1}], "expected": [{"test": 1}]}
         ]
     },
     {
-        // TODO: precision, scale
         "dataType": dataTypes.NUMERIC,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 1, "expected": 1},
-            {"value": 1.23, "expected": 1.23}
+            {"value": 1.23, "expected": 1.23},
+            {"options": "(1)", "value": 1, "expected": 1},
+            {"options": "(2)", "value": 10, "expected": 10},
+            {"options": "(2,1)", "value": 1.22, "expected": 1.2},
+            {"options": "(3,2)", "value": 1.22, "expected": 1.22},
+        ]
+    },
+    {
+        "dataType": dataTypes.NAME,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "öäüß", "expected": "öäüß"}
         ]
     },
     {
         "dataType": dataTypes.REAL,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1.23}
@@ -130,7 +143,7 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.SMALLINT,
-        "values": [
+        "tests": [
             {"value": null, "expected": 0},
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1}
@@ -138,45 +151,84 @@ const TESTS = [
     },
     {
         "dataType": dataTypes.SMALLSERIAL,
-        "values": [
+        "tests": [
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1}
         ]
     },
     {
         "dataType": dataTypes.SERIAL,
-        "values": [
+        "tests": [
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1}
         ]
     },
     {
         "dataType": dataTypes.TEXT,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": "test", "expected": "test"}
         ]
     },
     {
         "dataType": dataTypes.TIMESTAMP,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
-            {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)}
+            {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)},
+            {"options": "(1)", "value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP - VALUE_TIMESTAMP % 100)}
         ]
     },
     {
         "dataType": dataTypes.TIMESTAMP_WITH_TIMEZONE,
-        "values": [
+        "tests": [
             {"value": null, "expected": null},
             {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)}
         ]
     },
 ];
 
-TESTS.forEach((test) => {
-    const types = [test.dataType].concat(dataTypes.DATA_TYPE_ALIASES[test.dataType] || []);
-    types.forEach((type) => {
-        exports["test" + type.charAt(0).toUpperCase() + type.substr(1)] = () => {
+const checkReceived = (dataType, received, expected) => {
+    switch (dataType) {
+        case dataTypes.BYTEA:
+            if (expected === null) {
+                assert.isNull(received);
+            } else {
+                assert.isTrue(Arrays.equals(received.unwrap(), expected.unwrap()));
+            }
+            break;
+        case dataTypes.DATE:
+        case dataTypes.TIMESTAMP:
+        case dataTypes.TIMESTAMP_WITH_TIMEZONE:
+        case dataTypes.TIMESTAMPTZ:
+            if (expected === null) {
+                assert.isNull(received);
+            } else {
+                assert.strictEqual(received.constructor, Date);
+                assert.strictEqual(received.getTime(), expected.getTime());
+            }
+            break;
+        case dataTypes.JSON_TYPE:
+        case dataTypes.JSONB:
+            if (expected === null) {
+                assert.isNull(received);
+            } else {
+                assert.strictEqual(JSON.stringify(received), JSON.stringify(expected));
+            }
+            break;
+        default:
+            assert.strictEqual(received, expected);
+    }
+};
+
+const getTestName = (type, idx) => {
+    return "test" + type.split(/\s+/)
+            .map(part => part.charAt(0).toUpperCase() + part.substr(1))
+            .join("") + "-" + idx;
+};
+
+const createTest = (type, test) => {
+    test.tests.forEach((params, idx) => {
+        exports[getTestName(type, idx)] = () => {
             const Model = client.defineModel("TypeTest", {
                 "table": "t_type_test",
                 "id": {
@@ -187,45 +239,22 @@ TESTS.forEach((test) => {
                 "properties": {
                     "value": {
                         "column": "tst_value",
-                        "type": test.dataType
+                        "type": type + (params.options || "")
                     }
                 }
             });
             database.initModel(client, Model.mapping);
-            test.values.forEach((value, idx) => {
-                (new Model({"id": idx, "value": value.value})).save();
-                assert.strictEqual(Model.all().length, idx + 1);
-                const received = Model.get(idx).value;
-                switch (test.dataType) {
-                    case dataTypes.BYTEA:
-                        if (value.value === null) {
-                            assert.isNull(received);
-                        } else {
-                            assert.isTrue(Arrays.equals(received.unwrap(), value.expected.unwrap()), "Value " + value.value);
-                        }
-                        break;
-                    case dataTypes.DATE:
-                    case dataTypes.TIMESTAMP:
-                    case dataTypes.TIMESTAMP_WITH_TIMEZONE:
-                        if (value.value === null) {
-                            assert.isNull(received);
-                        } else {
-                            assert.strictEqual(received.getTime(), value.expected.getTime());
-                        }
-                        break;
-                    case dataTypes.JSON_TYPE:
-                    case dataTypes.JSONB:
-                        if (value.value === null) {
-                            assert.isNull(received);
-                        } else {
-                            assert.strictEqual(JSON.stringify(received), JSON.stringify(value.expected));
-                        }
-                        break;
-                    default:
-                        assert.strictEqual(received, value.expected, "Value " + value.value);
-                }
-            });
+            (new Model({"id": idx, "value": params.value})).save();
+            assert.strictEqual(Model.all().length, 1);
+            checkReceived(type, Model.get(idx).value, params.expected);
         };
+    });
+};
+
+TESTS.forEach((test) => {
+    const typesToTest = [test.dataType].concat(dataTypes.DATA_TYPE_ALIASES[test.dataType] || []);
+    typesToTest.forEach((typeToTest) => {
+        createTest(typeToTest, test);
     });
 });
 

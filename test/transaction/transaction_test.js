@@ -39,7 +39,7 @@ exports.tearDown = () => {
     Author = null;
 };
 
-exports.testCommit = function() {
+exports.testCommit = () => {
     assert.strictEqual(Author.all().length, 0);
     let transaction = client.beginTransaction();
     const authors = [];

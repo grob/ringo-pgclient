@@ -59,12 +59,28 @@ exports.testCRUD = () => {
     assert.strictEqual(author._state, constants.STATE_DELETED);
 };
 
-exports.testNullProps = function() {
+exports.testNullProps = () => {
     let author = new Author();
     assert.isNull(author.name);
     author.save();
     author = Author.get(1);
     assert.isNull(author.name);
+};
+
+exports.testQuery = () => {
+    const author = new Author({"name": "Jane Foo"});
+    author.save();
+    let result = Author.query();
+    assert.isTrue(Array.isArray(result));
+    assert.strictEqual(result.length, 1);
+    assert.isTrue(result[0] instanceof Author);
+    assert.deepEqual(result[0]._data, author._data);
+    result = Author.query("aut_name like #{name}", {"name": "Jane%"});
+    assert.strictEqual(result.length, 1);
+    assert.isTrue(result[0] instanceof Author);
+    assert.deepEqual(result[0]._data, author._data);
+    result = Author.query("aut_id = #{id}", {"id": 2});
+    assert.strictEqual(result.length, 0);
 };
 
 //start the test runner if we're called directly from command line

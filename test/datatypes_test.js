@@ -23,6 +23,7 @@ exports.tearDown = () => {
 
 const VALUE_DATE = new Date(2021, 2, 12, 0, 0, 0, 0);
 const VALUE_TIMESTAMP = new Date(2021, 2, 12, 16, 24, 17, 342);
+const VALUE_TIME = (new Date(1970, 0, 1, 16, 24, 17, 342)).getTime();
 const VALUE_BOX = [{"x": 1, "y": 2},{"x": 3, "y": 4}];
 const VALUE_POINT = {"x": 1, "y": 2};
 const VALUE_CIRCLE = {"center": {"x": 1, "y": 2}, "radius": 3};
@@ -262,11 +263,25 @@ const TESTS = [
         ]
     },
     {
+        "dataType": dataTypes.TIME,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_TIME, "expected": VALUE_TIME}
+        ]
+    },
+    {
         "dataType": dataTypes.TIMESTAMP,
         "tests": [
             {"value": null, "expected": null},
             {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)},
             {"options": "(1)", "value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP - VALUE_TIMESTAMP % 100)}
+        ]
+    },
+    {
+        "dataType": dataTypes.TIME_WITH_TIMEZONE,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": VALUE_TIME, "expected": VALUE_TIME}
         ]
     },
     {

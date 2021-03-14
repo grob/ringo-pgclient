@@ -59,6 +59,21 @@ const TESTS = [
         ]
     },
     {
+        "dataType": dataTypes.BIT,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "1", "expected": "1"},
+        ]
+    },
+    {
+        "dataType": dataTypes.BIT_VARYING,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "101", "expected": "101"},
+            {"value": "101010", "expected": "101010"},
+        ]
+    },
+    {
         "dataType": dataTypes.BOOLEAN,
         "tests": [
             {"value": null, "expected": false},
@@ -124,6 +139,18 @@ const TESTS = [
         "tests": [
             {"value": null, "expected": 0},
             {"value": 12, "expected": 12}
+        ]
+    },
+    {
+        "dataType": dataTypes.INTERVAL,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": {"years": 2}, "expected": {"years": 2, "months": 0, "days": 0, "hours": 0, "minutes": 0, "seconds": 0}},
+            {"value": {"months": 2}, "expected": {"years": 0, "months": 2, "days": 0, "hours": 0, "minutes": 0, "seconds": 0}},
+            {"value": {"days": 2}, "expected": {"years": 0, "months": 0, "days": 2, "hours": 0, "minutes": 0, "seconds": 0}},
+            {"value": {"hours": 2}, "expected": {"years": 0, "months": 0, "days": 0, "hours": 2, "minutes": 0, "seconds": 0}},
+            {"value": {"minutes": 2}, "expected": {"years": 0, "months": 0, "days": 0, "hours": 0, "minutes": 2, "seconds": 0}},
+            {"value": {"seconds": 2.23}, "expected": {"years": 0, "months": 0, "days": 0, "hours": 0, "minutes": 0, "seconds": 2.23}}
         ]
     },
     {
@@ -273,12 +300,7 @@ const checkReceived = (dataType, received, expected) => {
             break;
         case dataTypes.JSON_TYPE:
         case dataTypes.JSONB:
-            if (expected === null) {
-                assert.isNull(received);
-            } else {
-                assert.strictEqual(JSON.stringify(received), JSON.stringify(expected));
-            }
-            break;
+        case dataTypes.INTERVAL:
         case dataTypes.BOX:
         case dataTypes.POINT:
         case dataTypes.CIRCLE:

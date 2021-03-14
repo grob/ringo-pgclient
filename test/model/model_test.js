@@ -91,6 +91,8 @@ exports.testInsertBatch = () => {
     ];
     assert.isTrue(Author.insertBatch(params));
     assert.strictEqual(Author.all().length, 3);
+    assert.isTrue(Author.insertBatch(params, 2));
+    assert.strictEqual(Author.all().length, 6);
 };
 
 //start the test runner if we're called directly from command line

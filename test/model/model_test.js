@@ -75,11 +75,11 @@ exports.testQuery = () => {
     assert.strictEqual(result.length, 1);
     assert.isTrue(result[0] instanceof Author);
     assert.deepEqual(result[0]._data, author._data);
-    result = Author.query("aut_name like #{name}", {"name": "Jane%"});
+    result = Author.query("where aut_name like #{name}", {"name": "Jane%"});
     assert.strictEqual(result.length, 1);
     assert.isTrue(result[0] instanceof Author);
     assert.deepEqual(result[0]._data, author._data);
-    result = Author.query("aut_id = #{id}", {"id": 2});
+    result = Author.query("where aut_id = #{id}", {"id": 2});
     assert.strictEqual(result.length, 0);
 };
 

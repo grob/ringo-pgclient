@@ -138,7 +138,7 @@ exports.testInsertIsolation = () => {
     assert.isNotNull(Author.get(1));
     assert.isFalse(client.cache.containsKey(author._key));
     // same happens when querying for the newly created author instance
-    assert.strictEqual(Author.query("aut_id = #{id}", {"id": author.id})[0].id, 1);
+    assert.strictEqual(Author.query("where aut_id = #{id}", {"id": author.id})[0].id, 1);
     assert.isFalse(client.cache.containsKey(author._key));
     client.commitTransaction();
     // after commit the storable is visible and it's _entity cached
@@ -168,7 +168,7 @@ exports.testUpdateIsolation = () => {
     assert.strictEqual(Author.get(1).name, "Jane Foo");
     assert.strictEqual(client.cache.get(author._key).aut_name, "John Doe");
     // same happens when querying for the newly created author instance
-    assert.strictEqual(Author.query("aut_id = #{id}", {"id": author.id})[0].name, "Jane Foo");
+    assert.strictEqual(Author.query("where aut_id = #{id}", {"id": author.id})[0].name, "Jane Foo");
     assert.strictEqual(client.cache.get(author._key).aut_name, "John Doe");
     client.commitTransaction();
     // after commit the storable is visible and it's _entity cached

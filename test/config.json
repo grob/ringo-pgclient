@@ -1,5 +1,5 @@
 {
-    "url": "jdbc:postgresql://localhost/test",
+    "url": "jdbc:postgresql://localhost/test?logUnclosedConnections=true&reWriteBatchedInserts=true",
     "driver": "org.postgresql.Driver",
     "user": "test",
     "password": "test",

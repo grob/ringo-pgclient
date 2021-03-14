@@ -83,6 +83,16 @@ exports.testQuery = () => {
     assert.strictEqual(result.length, 0);
 };
 
+exports.testInsertBatch = () => {
+    const params = [
+        {"name": "Jane Foo"},
+        {"name": "John Doe"},
+        {"name": "No Body"}
+    ];
+    assert.isTrue(Author.insertBatch(params));
+    assert.strictEqual(Author.all().length, 3);
+};
+
 //start the test runner if we're called directly from command line
 if (require.main == module.id) {
     system.exit(require("test").run.apply(null,

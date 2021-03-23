@@ -353,7 +353,7 @@ const createTest = (type, test) => {
                     }
                 }
             });
-            database.initModel(client, Model.mapping);
+            Model.createTable();
             (new Model({"id": idx, "value": params.value})).save();
             assert.strictEqual(Model.all().length, 1);
             checkReceived(type, Model.get(idx).value, params.expected);

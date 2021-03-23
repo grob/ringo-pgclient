@@ -34,7 +34,7 @@ exports.testQuery = () => {
             }
         }
     });
-    database.initModel(client, Author.mapping);
+    Author.createTable();
     const author = new Author({"name": "Jane Foo"});
     author.save();
     client.cache.clear();

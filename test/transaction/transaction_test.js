@@ -30,7 +30,7 @@ exports.setUp = () => {
             }
         }
     });
-    database.initModel(client, Author.mapping);
+    Author.createTable();
 };
 
 exports.tearDown = () => {

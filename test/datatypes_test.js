@@ -291,6 +291,29 @@ const TESTS = [
             {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)}
         ]
     },
+    {
+        "dataType": dataTypes.TSQUERY,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "test", "expected": "'test'"},
+            {"value": "fat & rat", "expected": "'fat' & 'rat'"},
+            {"value": "fat & (rat | cat)", "expected": "'fat' & ( 'rat' | 'cat' )"},
+        ]
+    },
+    {
+        "dataType": dataTypes.TSVECTOR,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "test", "expected": "'test'"},
+            {
+                "value": "a fat cat sat on a mat and ate a fat rat",
+                "expected": "'a' 'and' 'ate' 'cat' 'fat' 'mat' 'on' 'rat' 'sat'"},
+            {
+                "value": "a:1 fat:2 cat:3 sat:4 on:5 a:6 mat:7 and:8 ate:9 a:10 fat:11 rat:12",
+                "expected": "'a':1,6,10 'and':8 'ate':9 'cat':3 'fat':2,11 'mat':7 'on':5 'rat':12 'sat':4"
+            }
+        ]
+    }
 ];
 
 const checkReceived = (dataType, received, expected) => {

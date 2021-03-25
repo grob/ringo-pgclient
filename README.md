@@ -117,8 +117,9 @@ The `query()` method accepts a custom row mapper function as third argument. Thi
 
 - cidr
 - inet
-- tsquery
-- tsvector
+- macaddr
+- macaddr8
+- money
 - uuid
 - xml
 

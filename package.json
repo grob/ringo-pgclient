@@ -11,7 +11,13 @@
             "email": "robert@nomatic.org"
         }
     ],
-    "contributors": [],
+    "contributors": [
+        {
+            "name": "Robert Gaggl",
+            "web": "http://nomatic.org/",
+            "email": "robert@nomatic.org"
+        }
+    ],
     "dependencies": {},
     "bugs": "http://github.com/grob/ringo-pgclient/issues",
     "licenses": [

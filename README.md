@@ -70,7 +70,7 @@ client.query("create table if not exists t_author (aut_id bigint primary key, au
 // create sequence
 client.query("create sequence author_id owned by t_author.aut_id");
 
-// insert row
+// insert row (the UNSAFE way - see below how to use parameter placeholders)
 client.query("insert into t_author values (nextval('author_id'), 'Jane Doe')");
 ```
 
@@ -200,6 +200,31 @@ Author.query()
 
 // which is similar to
 Author.all()
+```
+### Indexes
+
+Model mappings also allow the definition of indexes which are created when calling `Model.createTable()`:
+
+```
+const Author = client.defineModel("Author", {
+    "table": "t_author",
+    "id": {...},
+    "properties": {...},
+    "indexes": [
+        {
+            "name": "author_id_name", // required
+            "columns": ["aut_id", "aut_name"], // must be an array
+            "unique": true, // optional,
+            "tablespace": "indexes", // optional
+            "predicate": "where ..." // optional
+        },
+        {
+            "name": "author_vectors",
+            "columns": ["aut_vectors"],
+            "type": "gin"
+        }
+    ]
+});
 ```
 
 ### Model data cache

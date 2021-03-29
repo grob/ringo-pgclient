@@ -288,7 +288,7 @@ const TESTS = [
         "dataType": dataTypes.TIMESTAMP_WITH_TIMEZONE,
         "tests": [
             {"value": null, "expected": null},
-            {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP)}
+            {"value": VALUE_TIMESTAMP, "expected": new Date(VALUE_TIMESTAMP.getTime())}
         ]
     },
     {

@@ -1,4 +1,4 @@
-require("ringo/logging").setConfig(getResource("./log4j2.properties"));
+require("./helpers").configureLogging();
 
 const assert = require("assert");
 const system = require("system");
@@ -93,7 +93,10 @@ const TESTS = [
         "dataType": dataTypes.BYTEA,
         "tests": [
             {"value": null, "expected": null},
-            {"value": binary.toByteString("test"), "expected": binary.toByteString("test")}
+            {
+                "value": binary.toByteString ? binary.toByteString("test") : "test".toByteString(),
+                "expected": binary.toByteString ? binary.toByteString("test") : "test".toByteString()
+            }
         ]
     },
     {
@@ -103,6 +106,18 @@ const TESTS = [
             {"value": "a", "expected": "a"},
             {"options": "(1)", "value": "a", "expected": "a"},
             {"options": "(2)", "value": "a", "expected": "a "} // character is padded with spaces up to defined length
+        ]
+    },
+    {
+        "dataType": dataTypes.CIDR,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "10", "expected": "10.0.0.0/8"},
+            {"value": "10.1", "expected": "10.1.0.0/16"},
+            {"value": "10.1.2", "expected": "10.1.2.0/24"},
+            {"value": "192.168.100.128/25", "expected": "192.168.100.128/25"},
+            {"value": "2001:4f8:3:ba::/64", "expected": "2001:4f8:3:ba::/64"},
+            {"value": "2001:4f8:3:ba:2e0:81ff:fe22:d1f1/128", "expected": "2001:4f8:3:ba:2e0:81ff:fe22:d1f1/128"},
         ]
     },
     {
@@ -133,6 +148,16 @@ const TESTS = [
         "tests": [
             {"value": null, "expected": 0},
             {"value": 1.234, "expected": 1.2339999675750732}
+        ]
+    },
+    {
+        "dataType": dataTypes.INET,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "10.0.0.1", "expected": "10.0.0.1"},
+            {"value": "10.0.0.0/24", "expected": "10.0.0.0/24"},
+            {"value": "10.0.0.1/24", "expected": "10.0.0.1/24"},
+            {"value": "10.0.0.1/32", "expected": "10.0.0.1"},
         ]
     },
     {
@@ -201,6 +226,27 @@ const TESTS = [
             {"options": "(2)", "value": 10, "expected": 10},
             {"options": "(2,1)", "value": 1.22, "expected": 1.2},
             {"options": "(3,2)", "value": 1.22, "expected": 1.22},
+        ]
+    },
+    {
+        "dataType": dataTypes.MACADDR,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "08:00:2b:01:02:03", "expected": "08:00:2b:01:02:03"},
+            {"value": "08-00-2b-01-02-03", "expected": "08:00:2b:01:02:03"},
+            {"value": "08002b:010203", "expected": "08:00:2b:01:02:03"},
+            {"value": "08002b-010203", "expected": "08:00:2b:01:02:03"},
+            {"value": "0800.2b01.0203", "expected": "08:00:2b:01:02:03"},
+            {"value": "0800-2b01-0203", "expected": "08:00:2b:01:02:03"},
+            {"value": "08002b010203", "expected": "08:00:2b:01:02:03"},
+        ]
+    },
+    {
+        "dataType": dataTypes.MACADDR8,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "08:00:2b:01:02:03:04:05", "expected": "08:00:2b:01:02:03:04:05"},
+            {"value": "08-00-2b-01-02-03-04-05", "expected": "08:00:2b:01:02:03:04:05"},
         ]
     },
     {

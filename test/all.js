@@ -1,3 +1,4 @@
+require("./helpers").configureLogging();
 const system = require("system");
 
 exports.testDataTypes = require("./datatypes_test");

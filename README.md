@@ -111,19 +111,48 @@ client.query("update t_author set aut_name = #{name} where aut_id = #{id}", {
 
 The `query()` method accepts a custom row mapper function as third argument. This function receives the JDBC result set instance as sole argument. If you're using a custom row mapper make sure to close the result set.
 
-## Data types
+## Data types and conversions
 
-`ringo-pgclient` currently supports nearly all data types of PostgreSQL except:
+`ringo-pgclient` supports nearly PostgreSQL data types. You can also use data type aliases supported by PostgreSQL, e.g. `bigint` instead of `int8`.
 
-- cidr
-- inet
-- macaddr
-- macaddr8
-- money
-- uuid
-- xml
+Note that some data types **convert values stored in database** and require setting values in a specific form:
 
-You can also use data type aliases supported by PostgreSQL, e.g. `bigint` instead of `int8`.
+### json/jsonb
+
+Data types *json* and *jsonb* return an object or array and accept either a JSON string or an object/array.
+
+### Timestamp/Time
+
+The data type *timestamp* (with or without timezone) returns a Date object, while the *time* (with or without timezone) data type returns the time in milliseconds.
+
+### Geometric types
+
+Geometric types are serialized into an object and expect the same form as values:
+
+- *point*: `{"x": <number>, "y": <number>}`
+- *box*: `<point>`
+- *circle*: `{"center": <point>, "radius": <number>}`
+- *line*: `{"a": <number>, "b": <number>, "c": <number>}`
+- *lseg*: `[<point>, <point>]`
+- *path*: `{"points": [<point>[, <point>...]], isOpen: <boolean>}`
+- *polygon*: `[<point>[, <point>...]]`
+
+### Interval
+
+Data type *interval* returns an object of the following form:
+
+```
+{
+    "years": <number>,
+    "months": <number>,
+    "days": <number>,
+    "hours": <number>,
+    "minutes": <number>,
+    "seconds": <number>
+}
+```
+
+When storing an interval value all above properties are optional and default to zero.
 
 ## Transactions
 

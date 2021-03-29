@@ -359,6 +359,20 @@ const TESTS = [
                 "expected": "'a':1,6,10 'and':8 'ate':9 'cat':3 'fat':2,11 'mat':7 'on':5 'rat':12 'sat':4"
             }
         ]
+    },
+    {
+        "dataType": dataTypes.UUID,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", "expected": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}
+        ]
+    },
+    {
+        "dataType": dataTypes.XML_TYPE,
+        "tests": [
+            {"value": null, "expected": null},
+            {"value": "<foo>bar</foo>", "expected": "<foo>bar</foo>"}
+        ]
     }
 ];
 

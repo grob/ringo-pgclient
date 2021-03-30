@@ -113,7 +113,14 @@ The `query()` method accepts a custom row mapper function as third argument. Thi
 
 ## Data types and conversions
 
-`ringo-pgclient` supports nearly PostgreSQL data types. You can also use data type aliases supported by PostgreSQL, e.g. `bigint` instead of `int8`.
+`ringo-pgclient` supports nearly all PostgreSQL data types, with the exception of:
+
+- `money`
+- `pg_lsn`
+- `pg_snapshot`
+- `txid_snapshot`
+
+You can also use data type aliases supported by PostgreSQL, e.g. `bigint` instead of `int8`.
 
 Note that some data types **convert values stored in database** and require setting values in a specific form:
 

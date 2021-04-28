@@ -2,6 +2,7 @@ require("./helpers").configureLogging();
 const system = require("system");
 
 exports.testDataTypes = require("./datatypes_test");
+exports.testArrayDataTypes = require("./array_datatypes_test");
 exports.testModel = require("./model/model_test");
 exports.testClient = require("./client_test");
 exports.testTransaction = require("./transaction/transaction_test");

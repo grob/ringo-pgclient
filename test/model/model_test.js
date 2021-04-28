@@ -83,6 +83,20 @@ exports.testQuery = () => {
     assert.strictEqual(result.length, 0);
 };
 
+exports.testGetMany = () => {
+    const ids = ["one", "two", "three"].map(value => {
+        const author = new Author({"name": value});
+        author.save();
+        return author.id;
+    });
+    let result = Author.getMany(ids);
+    assert.strictEqual(result.length, ids.length);
+    ids.forEach((id, idx) => assert.strictEqual(result[idx].id, id));
+    // ids.push(ids.length + 1);
+    result = Author.getMany(ids.concat([4]));
+    console.log(ids, result.length === 3);
+};
+
 exports.testInsertBatch = () => {
     const params = [
         {"name": "Jane Foo"},

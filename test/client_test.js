@@ -57,6 +57,34 @@ exports.testQuery = () => {
     assert.isTrue(client.cache.containsKey(result[0]._key));
 };
 
+exports.testArrayParam = () => {
+    const Author = client.defineModel("Author", {
+        "table": "t_author",
+        "id": {
+            "column": "aut_id",
+            "type": "int8",
+            "sequence": "author_id"
+        },
+        "properties": {
+            "name": {
+                "column": "aut_name",
+                "type": "varchar",
+                "constraint": "not null"
+            }
+        }
+    });
+    Author.createTable();
+    const authorA = new Author({"name": "Jane Foo"});
+    authorA.save();
+    const authorB = new Author({"name": "John Doe"});
+    authorB.save();
+    client.cache.clear();
+    let result = Author.query("where aut_id = any(#{ids})", {
+        ids: [authorA.id, authorB.id]
+    });
+    assert.strictEqual(result.length, 2);
+};
+
 //start the test runner if we're called directly from command line
 if (require.main == module.id) {
     system.exit(require("test").run.apply(null,

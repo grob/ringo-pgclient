@@ -98,12 +98,14 @@ exports.testGetMany = () => {
         author.save();
         return author.id;
     });
-    let result = Author.getMany(ids);
+    // getMany maintains the order of ids
+    let result = Author.getMany(ids.reverse());
     assert.strictEqual(result.length, ids.length);
-    ids.forEach((id, idx) => assert.strictEqual(result[idx].id, id));
-    // ids.push(ids.length + 1);
+    ids.forEach((id, idx) => {
+        assert.strictEqual(idx, result.findIndex(author => author.id === id));
+        assert.strictEqual(result[idx].id, id)
+    });
     result = Author.getMany(ids.concat([4]));
-    console.log(ids, result.length === 3);
 };
 
 exports.testInsertBatch = () => {

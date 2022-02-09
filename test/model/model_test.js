@@ -35,6 +35,32 @@ exports.tearDown = () => {
     Author = null;
 };
 
+const idTest = (id) => {
+    client.query("insert into t_author (aut_id, aut_name) values (#{id}, 'John Doe')", {
+        id: id
+    });
+    let author = Author.get(id);
+    assert.isNotNull(author);
+    assert.isNotUndefined(author);
+    assert.equal(author.id, id);
+    assert.equal(author.name, 'John Doe');
+    author.name = 'Johnathan Doe';
+    author.save();
+    let modifiedAuthor = Author.get(id);
+    assert.isNotNull(modifiedAuthor);
+    assert.isNotUndefined(modifiedAuthor);
+    assert.equal(modifiedAuthor.id, id);
+    assert.equal(modifiedAuthor.name, 'Johnathan Doe');
+};
+
+exports.testZeroID = () => {
+    idTest(0);
+};
+
+exports.testNegativeID = () => {
+    idTest(-1);
+};
+
 exports.testCRUD = () => {
     assert.strictEqual(Author.all().length, 0);
     let author = new Author({"name": "John Doe"});

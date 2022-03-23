@@ -1,6 +1,6 @@
 {
     "name": "ringo-pgclient",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "PostgreSQL client for RingoJS",
     "keywords": ["ringo", "postgresql", "sql", "database", "storage", "orm", "jdbc"],
     "homepage": "https://github.com/grob/ringo-pgclient",

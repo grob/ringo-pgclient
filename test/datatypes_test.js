@@ -43,7 +43,7 @@ const TESTS = [
     {
         "dataType": dataTypes.BIGINT,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 1, "expected": 1},
             {"value": 1.1, "expected": 1},
             {"value": java.lang.Long.MIN_VALUE, "expected": java.lang.Long.MIN_VALUE},
@@ -77,7 +77,7 @@ const TESTS = [
     {
         "dataType": dataTypes.BOOLEAN,
         "tests": [
-            {"value": null, "expected": false},
+            {"value": null, "expected": null},
             {"value": true, "expected": true},
             {"value": false, "expected": false}
         ]
@@ -146,7 +146,7 @@ const TESTS = [
     {
         "dataType": dataTypes.DOUBLE_PRECISION,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 1.234, "expected": 1.2339999675750732}
         ]
     },
@@ -163,7 +163,7 @@ const TESTS = [
     {
         "dataType": dataTypes.INTEGER,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 12, "expected": 12}
         ]
     },
@@ -219,7 +219,7 @@ const TESTS = [
     {
         "dataType": dataTypes.NUMERIC,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1.23},
             {"options": "(1)", "value": 1, "expected": 1},
@@ -274,7 +274,7 @@ const TESTS = [
     {
         "dataType": dataTypes.REAL,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1.23}
         ]
@@ -282,7 +282,7 @@ const TESTS = [
     {
         "dataType": dataTypes.SMALLINT,
         "tests": [
-            {"value": null, "expected": 0},
+            {"value": null, "expected": null},
             {"value": 1, "expected": 1},
             {"value": 1.23, "expected": 1}
         ]

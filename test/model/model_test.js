@@ -125,13 +125,20 @@ exports.testGetMany = () => {
         return author.id;
     });
     // getMany maintains the order of ids
-    let result = Author.getMany(ids.reverse());
+    const reverseIds = ids.slice().reverse();
+    let result = Author.getMany(reverseIds);
     assert.strictEqual(result.length, ids.length);
-    ids.forEach((id, idx) => {
+    reverseIds.forEach((id, idx) => {
         assert.strictEqual(idx, result.findIndex(author => author.id === id));
         assert.strictEqual(result[idx].id, id)
     });
-    result = Author.getMany(ids.concat([4]));
+    // result contains duplicate models too
+    result = Author.getMany(reverseIds.concat(ids));
+    assert.strictEqual(result.length, ids.length * 2);
+
+    // getMany never returns nulls
+    result = Author.getMany([1234]);
+    assert.strictEqual(result.length, 0);
 };
 
 exports.testInsertBatch = () => {
